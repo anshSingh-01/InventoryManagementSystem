@@ -1,25 +1,31 @@
 package org.springproject.inventorymangaement.dtos;
 
+import org.springproject.inventorymangaement.entity.BaseEntity;
 import org.springproject.inventorymangaement.enums.WarehouseType;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
-public class WarehouseDto {
+public class WarehouseDto extends BaseEntity {
+
 
     private String name;
     private WarehouseType type; // Enforced compile-time safety
     private String address;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 
-    public WarehouseDto(){}
+
+    public WarehouseDto(){
+        super();
+    }
+
+
     public WarehouseDto(String name, WarehouseType type, String address, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(createdAt,updatedAt);
         this.name = name;
         this.type = type;
         this.address = address;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
+
 
     public String getName() {
         return name;
@@ -45,19 +51,4 @@ public class WarehouseDto {
         this.address = address;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

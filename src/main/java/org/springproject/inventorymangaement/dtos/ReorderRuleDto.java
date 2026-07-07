@@ -1,7 +1,5 @@
 package org.springproject.inventorymangaement.dtos;
 
-import jakarta.persistence.Column;
-
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -32,19 +30,19 @@ public class ReorderRuleDto {
         this.updatedAt = updatedAt;
     }
 
-    public UUID getSku_id() {
+    public UUID getSkuId() {
         return sku_id;
     }
 
-    public void setSku_id(UUID sku_id) {
+    public void setSkuId(UUID sku_id) {
         this.sku_id = sku_id;
     }
 
-    public UUID getWarehouse_id() {
+    public UUID getWarehouseId() {
         return warehouse_id;
     }
 
-    public void setWarehouse_id(UUID warehouse_id) {
+    public void setWarehouseId(UUID warehouse_id) {
         this.warehouse_id = warehouse_id;
     }
 

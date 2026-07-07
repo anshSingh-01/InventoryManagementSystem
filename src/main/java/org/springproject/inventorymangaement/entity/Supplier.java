@@ -7,36 +7,27 @@ import jakarta.persistence.Id;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 @Entity
-public class Supplier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Supplier extends BaseEntity {
+
     private String name;
     private String contactEmail;
     private Integer leadTimeDays; // Integer wrapper allows null if unknown
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
+
 
     public Supplier(){
-
+        super();
     }
 
-    public Supplier(UUID id, String name, String contactEmail, Integer leadTimeDays, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.id = id;
+    public Supplier( String name, String contactEmail, Integer leadTimeDays) {
+
         this.name = name;
         this.contactEmail = contactEmail;
         this.leadTimeDays = leadTimeDays;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
-    public Supplier(String name, String contactEmail, Integer leadTimeDays, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.name = name;
-        this.contactEmail = contactEmail;
-        this.leadTimeDays = leadTimeDays;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+
+
+
 
     public String getName() {
         return name;
@@ -62,19 +53,5 @@ public class Supplier {
         this.leadTimeDays = leadTimeDays;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

@@ -5,5 +5,8 @@ import org.springproject.inventorymangaement.entity.ReorderRule;
 
 import java.util.UUID;
 
-public interface ReorderRuleReposiotryImpl extends JpaRepository<ReorderRule, UUID> {
+public interface ReorderRuleRepositoryImpl extends JpaRepository<ReorderRule, UUID> {
+
+        ReorderRule findBySkuIdAndWarehouseId(UUID skuId ,UUID warehouseId);
+
 }

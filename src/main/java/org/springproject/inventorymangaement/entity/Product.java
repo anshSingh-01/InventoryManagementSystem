@@ -8,43 +8,36 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-public class Product {
+public class Product extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
     private String name;
     private String brand;
     private String description;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 
-    public Product(){}
 
-    public Product(UUID id, String name, String brand, String description, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.id = id;
+    public Product(){
+        super();
+    }
+
+    public Product( String name, String brand, String description) {
         this.name = name;
         this.brand = brand;
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public Product(String name, String brand, String description, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+
+        super(createdAt,updatedAt);
         this.name = name;
         this.brand = brand;
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+
     }
 
-    public UUID getId() {
-        return id;
-    }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+
+
 
     public String getName() {
         return name;
@@ -70,19 +63,4 @@ public class Product {
         this.description = description;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

@@ -1,12 +1,13 @@
 package org.springproject.inventorymangaement.dtos;
 
-import jakarta.persistence.*;
-import org.springproject.inventorymangaement.entity.Product;
+import org.springproject.inventorymangaement.entity.BaseEntity;
+import tools.jackson.core.ObjectReadContext;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.prefs.BackingStoreException;
 
-public class SkuDto {
+public class SkuDto extends BaseEntity {
 
     private String skuCode;
 
@@ -16,15 +17,18 @@ public class SkuDto {
 
     // Getters, Setters, Constructors
 
-    public SkuDto(){}
-
+    public SkuDto(){
+        super();
+    }
 
     public SkuDto(String skuCode, BigDecimal weight) {
+        super();
         this.skuCode = skuCode;
         this.weight = weight;
     }
 
     public SkuDto(String skuCode, UUID product_id,BigDecimal weight) {
+        super();
         this.skuCode = skuCode;
         this.weight = weight;
         this.product_id =product_id;
@@ -45,8 +49,6 @@ public class SkuDto {
     public void setSkuCode(String skuCode) {
         this.skuCode = skuCode;
     }
-
-
 
     public BigDecimal getWeight() {
         return weight;

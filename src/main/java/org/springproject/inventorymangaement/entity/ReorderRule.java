@@ -15,11 +15,7 @@ import java.util.UUID;
                 )
         }
 )
-public class ReorderRule {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class ReorderRule extends BaseEntity{
 
     // Direct object relation to the target SKU
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,35 +49,29 @@ public class ReorderRule {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt = OffsetDateTime.now();
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = OffsetDateTime.now();
-    }
+
 
     // Getters, Setters, and Constructors
 
-    public ReorderRule(){}
-    public ReorderRule(UUID id, BigDecimal reorderThreshold, BigDecimal targetReorderQuantity, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.id = id;
+    public ReorderRule(){
+        super();
+    }
+    public ReorderRule( BigDecimal reorderThreshold, BigDecimal targetReorderQuantity) {
+
         this.reorderThreshold = reorderThreshold;
         this.targetReorderQuantity = targetReorderQuantity;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+
     }
 
     public ReorderRule(BigDecimal reorderThreshold, BigDecimal targetReorderQuantity, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+            super(createdAt,updatedAt);
         this.reorderThreshold = reorderThreshold;
         this.targetReorderQuantity = targetReorderQuantity;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+
     }
 
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
+
+
     public Sku getSku() {
         return sku;
     }
@@ -113,19 +103,4 @@ public class ReorderRule {
         this.targetReorderQuantity = targetReorderQuantity;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

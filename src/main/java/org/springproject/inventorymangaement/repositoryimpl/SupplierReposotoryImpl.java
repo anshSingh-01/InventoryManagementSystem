@@ -6,4 +6,7 @@ import org.springproject.inventorymangaement.entity.Supplier;
 import java.util.UUID;
 
 public interface SupplierReposotoryImpl extends JpaRepository<Supplier, UUID> {
+
+            Supplier findByNameAndContactEmail(String name, String contactEmail);
+
 }

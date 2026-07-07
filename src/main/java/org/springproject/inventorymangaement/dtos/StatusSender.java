@@ -12,6 +12,18 @@ public class StatusSender {
 
     }
 
+    public StatusCode getStatusCode(){
+        return serverStatus;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Object getObj() {
+        return obj;
+    }
+
     public StatusSender(StatusCode serverStatus, String message, Object obj) {
         this.serverStatus = serverStatus;
         this.message = message;

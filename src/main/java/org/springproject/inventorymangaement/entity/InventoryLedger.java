@@ -7,11 +7,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "inventory_ledger")
-public class InventoryLedger {
+public class InventoryLedger  extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sku_id", nullable = false)
@@ -31,43 +29,17 @@ public class InventoryLedger {
     @Column(name = "reference_id", nullable = false)
     private String referenceId;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt = OffsetDateTime.now();
-
-    public InventoryLedger(){}
-
-    public InventoryLedger(UUID id, Sku sku, Warehouse warehouse, TransactionOptions.TransactionType transactionType, BigDecimal quantityDelta, String referenceId, OffsetDateTime createdAt) {
-        this.id = id;
-        this.sku = sku;
-        this.warehouse = warehouse;
-        this.transactionType = transactionType;
-        this.quantityDelta = quantityDelta;
-        this.referenceId = referenceId;
-        this.createdAt = createdAt;
-    }
-
-    public InventoryLedger(TransactionOptions.TransactionType transactionType, BigDecimal quantityDelta, String referenceId, OffsetDateTime createdAt, UUID id) {
-        this.transactionType = transactionType;
-        this.quantityDelta = quantityDelta;
-        this.referenceId = referenceId;
-        this.createdAt = createdAt;
-        this.id = id;
+    public InventoryLedger(){
+        super();
     }
 
     public InventoryLedger(TransactionOptions.TransactionType transactionType, BigDecimal quantityDelta, String referenceId, OffsetDateTime createdAt) {
+        super(createdAt != null ? createdAt : OffsetDateTime.now(), OffsetDateTime.now());
         this.transactionType = transactionType;
         this.quantityDelta = quantityDelta;
         this.referenceId = referenceId;
-        this.createdAt = createdAt;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public Sku getSku() {
         return sku;
@@ -109,11 +81,4 @@ public class InventoryLedger {
         this.referenceId = referenceId;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

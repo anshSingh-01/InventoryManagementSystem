@@ -6,4 +6,7 @@ import org.springproject.inventorymangaement.entity.Warehouse;
 import java.util.UUID;
 
 public interface WarehouseRepositoryImpl extends JpaRepository<Warehouse, UUID> {
+
+        Warehouse findByNameAndAddress(String name ,String address);
+
 }

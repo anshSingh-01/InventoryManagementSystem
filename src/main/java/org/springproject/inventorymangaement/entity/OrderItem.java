@@ -6,11 +6,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-public class OrderItem {
+public class OrderItem  extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
@@ -21,9 +18,12 @@ public class OrderItem {
     private BigDecimal quantity;  // Supports ordering fractions (e.g., 2.5 kg of raw materials)
     private BigDecimal unitPrice; // Enforces monetary accuracy
 
-    public OrderItem(){}
+    public OrderItem(){
+        super();
+    }
 
     public OrderItem(Order order, Sku sku, BigDecimal quantity, BigDecimal unitPrice) {
+
         this.order = order;
         this.sku = sku;
         this.quantity = quantity;
@@ -35,13 +35,6 @@ public class OrderItem {
         this.unitPrice = unitPrice;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public Order getOrder() {
         return order;

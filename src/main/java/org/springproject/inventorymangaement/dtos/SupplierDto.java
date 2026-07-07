@@ -1,23 +1,32 @@
 package org.springproject.inventorymangaement.dtos;
 
-import java.time.OffsetDateTime;
+import org.springproject.inventorymangaement.entity.BaseEntity;
 
-public class SupplierDto {
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+public class SupplierDto extends BaseEntity {
+
 
     private String name;
     private String contactEmail;
     private Integer leadTimeDays; // Integer wrapper allows null if unknown
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 
-    public SupplierDto(){}
-    public SupplierDto(String name, String contactEmail, Integer leadTimeDays, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+
+    public SupplierDto(){
+        super();
+    }
+    public SupplierDto( String name, String contactEmail, Integer leadTimeDays, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(createdAt,updatedAt);
         this.name = name;
         this.contactEmail = contactEmail;
         this.leadTimeDays = leadTimeDays;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+
     }
+
+
+
+
 
     public String getName() {
         return name;
@@ -43,19 +52,4 @@ public class SupplierDto {
         this.leadTimeDays = leadTimeDays;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

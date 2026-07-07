@@ -6,11 +6,9 @@ import java.util.UUID;
 
 @Entity
 
-public class Sku {
+public class Sku extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
 
     @Column(name = "sku_code", nullable = false, unique = true)
     private String skuCode;
@@ -25,9 +23,11 @@ public class Sku {
 
     // Getters, Setters, Constructors
 
-    public Sku(){}
+    public Sku(){
+        super();
+    }
     public Sku(UUID id, String skuCode, Product product, BigDecimal weight) {
-        this.id = id;
+
         this.skuCode = skuCode;
         this.product = product;
         this.weight = weight;
@@ -38,13 +38,7 @@ public class Sku {
         this.weight = weight;
     }
 
-    public UUID getId() {
-        return id;
-    }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getSkuCode() {
         return skuCode;

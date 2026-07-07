@@ -6,4 +6,7 @@ import org.springproject.inventorymangaement.entity.OrderItem;
 import java.util.UUID;
 
 public interface OrderItemRepositoryImpl extends JpaRepository<OrderItem, UUID> {
+
+    OrderItem findByOrderIdAndSkuId(UUID orderId , UUID skuId);
+
 }

@@ -9,38 +9,20 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Order extends BaseEntity {
+
     private String orderReference;
     private OrderStatus status;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 
-    public Order(){}
-    public Order(UUID id, String orderReference, OrderStatus status, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.id = id;
+    public Order(){
+        super();
+    }
+    public Order( String orderReference, OrderStatus status, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+        super(createdAt, updatedAt);
         this.orderReference = orderReference;
         this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
-    public Order(String orderReference, OrderStatus status, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
-        this.orderReference = orderReference;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getOrderReference() {
         return orderReference;
@@ -58,19 +40,4 @@ public class Order {
         this.status = status;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }
