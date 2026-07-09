@@ -9,4 +9,5 @@ public interface WarehouseRepositoryImpl extends JpaRepository<Warehouse, UUID> 
 
         Warehouse findByNameAndAddress(String name ,String address);
 
+
 }

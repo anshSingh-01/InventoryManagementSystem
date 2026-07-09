@@ -57,4 +57,12 @@ public class InventoryBalanceController {
         StatusSender response = inventoryBalanceService.addInventoryBalances(inventoryBalanceDtos);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/skuCount")
+   public Long getSkuCount(UUID sku_id){
+            return inventoryBalanceService.getSkuCount(sku_id);
+    }
+
+
+
 }

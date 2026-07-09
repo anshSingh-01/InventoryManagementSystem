@@ -35,7 +35,6 @@ public class OrderItem  extends BaseEntity{
         this.unitPrice = unitPrice;
     }
 
-
     public Order getOrder() {
         return order;
     }

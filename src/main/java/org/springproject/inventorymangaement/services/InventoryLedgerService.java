@@ -38,8 +38,8 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
             return new StatusSender(StatusCode.ERROR, "Failed to save Ledger Entry: Invalid Sku ID or Warehouse ID references.", inventoryLedgerDto);
         }
 
-        inventoryLedgerRepository.save(ledger);
-        return new StatusSender(StatusCode.SUCCESS, "Added Ledger Entry Successfully", inventoryLedgerDto);
+        ledger = inventoryLedgerRepository.save(ledger);
+        return new StatusSender(StatusCode.SUCCESS, "Added Ledger Entry Successfully", EntityToDto(ledger));
     }
 
     // add ledger entries
@@ -49,8 +49,9 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
                 .filter(ledger -> ledger.getSku() != null && ledger.getWarehouse() != null)
                 .toList();
 
-        inventoryLedgerRepository.saveAll(ledgers);
-        return new StatusSender(StatusCode.SUCCESS, "Added all valid ledger entries successfully", inventoryLedgerDtos);
+        List<InventoryLedger> saved = inventoryLedgerRepository.saveAll(ledgers);
+        List<InventoryLedgerDto> savedDtos = saved.stream().map(this::EntityToDto).toList();
+        return new StatusSender(StatusCode.SUCCESS, "Added all valid ledger entries successfully", savedDtos);
     }
 
     // get ledger entries
@@ -77,6 +78,10 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
                 inventoryLedgerDto.getCreatedAt()
         );
 
+        if (inventoryLedgerDto.getId() != null) {
+            ledger.setId(inventoryLedgerDto.getId());
+        }
+
         // 1. Hydrate full Sku Entity from DB using the DTO's UUID
         if (inventoryLedgerDto.getSkuId() != null) {
             Optional<Sku> skuOpt = skuRepository.findById(inventoryLedgerDto.getSkuId());
@@ -97,6 +102,7 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
         if (inventoryLedger == null) return null;
 
         InventoryLedgerDto dto = new InventoryLedgerDto();
+        dto.setId(inventoryLedger.getId());
         dto.setTransactionType(inventoryLedger.getTransactionType());
         dto.setQuantityDelta(inventoryLedger.getQuantityDelta());
         dto.setReferenceId(inventoryLedger.getReferenceId());

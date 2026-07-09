@@ -9,6 +9,7 @@ import java.util.UUID;
 public class InventoryLedgerDto {
 
 
+    private UUID id;
     private UUID sku_id;
 
     private UUID warehouse_id;
@@ -30,6 +31,14 @@ public class InventoryLedgerDto {
         this.quantityDelta = quantityDelta;
         this.referenceId = referenceId;
         this.createdAt = createdAt;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public UUID getSkuId() {

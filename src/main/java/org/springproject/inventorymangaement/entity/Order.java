@@ -23,6 +23,10 @@ public class Order extends BaseEntity {
         this.status = status;
     }
 
+    public Order(String orderReference, OrderStatus status) {
+        this.orderReference = orderReference;
+        this.status = status;
+    }
 
     public String getOrderReference() {
         return orderReference;

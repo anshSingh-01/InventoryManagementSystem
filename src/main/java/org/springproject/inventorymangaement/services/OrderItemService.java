@@ -1,18 +1,23 @@
 package org.springproject.inventorymangaement.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springproject.inventorymangaement.dtos.DtoImpl;
 import org.springproject.inventorymangaement.dtos.OrderItemDto;
+import org.springproject.inventorymangaement.dtos.SkuDto;
 import org.springproject.inventorymangaement.dtos.StatusSender;
 import org.springproject.inventorymangaement.entity.Order;
 import org.springproject.inventorymangaement.entity.OrderItem;
 import org.springproject.inventorymangaement.entity.Sku;
+import org.springproject.inventorymangaement.entity.Warehouse;
+import org.springproject.inventorymangaement.enums.OrderStatus;
 import org.springproject.inventorymangaement.enums.StatusCode;
 import org.springproject.inventorymangaement.repositoryimpl.OrderItemRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.OrderRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.SkuRepositoryImpl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +34,14 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
 
     @Autowired
     private SkuRepositoryImpl skuRepository;
+
+    @Autowired
+    private SkuService service;
+
+    @Autowired
+    private InventoryBalanceService inventoryBalanceService;
+
+//    public record InventoryDto();
 
     // adding OrderItem
     public StatusSender addOrderItem(OrderItemDto orderItemDto) {
@@ -61,6 +74,39 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
                 .map(this::EntityToDto)
                 .toList();
     }
+
+
+    public StatusSender checkoutDemo(SkuDto skuDto , Long count , String orderRef, BigDecimal Quantity , BigDecimal unitprice) {
+
+        Sku sku = service.DtoToEntity(skuDto);
+        Long total = inventoryBalanceService.getSkuCount(sku.getId());
+
+        if(total < count){
+                return new StatusSender(StatusCode.ERROR,"Limit Exceed",null);
+        }
+
+        List<Object[]> lists = inventoryBalanceService.getSkuCountByWarehouse(sku.getId());
+
+        for(Object[] obj : lists){
+
+                if(count == 0L)break;
+                if((Long)obj[1] <= count){
+                        count = count - (Long)(obj[1]);
+                        obj[1] = 0L;
+                        inventoryBalanceService.deleteByTwoIds((UUID)obj[0],sku.getId());
+                }
+                else{
+                      obj[1] = (Long)obj[1] -count;
+                      count =0L;
+                      inventoryBalanceService.deleteUntilRes((Long)obj[1],sku.getId(), (UUID)obj[0]);
+                }
+        }
+
+
+        orderItemRepository.save(new OrderItem(new Order(orderRef, OrderStatus.RESERVED),sku,Quantity ,unitprice));
+        return new StatusSender(StatusCode.SUCCESS,"Item Reserved",null);
+    }
+
 
     // get order item
     public OrderItemDto getOrderItemById(UUID id) {

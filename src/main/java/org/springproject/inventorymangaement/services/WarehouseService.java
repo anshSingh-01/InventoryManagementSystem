@@ -44,6 +44,8 @@ public class WarehouseService implements DtoImpl<Warehouse, WarehouseDto> {
                 .toList();
     }
 
+
+
     // get warehouse
     public WarehouseDto getWarehouseById(UUID id) {
         return EntityToDto(warehouseRepository.findById(id).orElse(null));

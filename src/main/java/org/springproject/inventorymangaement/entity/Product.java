@@ -4,15 +4,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
 public class Product extends BaseEntity{
 
-
+    @NotNull
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String brand;
+
+    @NotBlank
     private String description;
 
 

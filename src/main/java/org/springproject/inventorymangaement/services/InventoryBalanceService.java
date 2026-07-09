@@ -15,6 +15,7 @@ import org.springproject.inventorymangaement.repositoryimpl.SkuRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.WarehouseRepositoryImpl;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class InventoryBalanceService implements DtoImpl<InventoryBalance, InventoryBalanceDto> {
@@ -64,6 +65,33 @@ public class InventoryBalanceService implements DtoImpl<InventoryBalance, Invent
         return EntityToDto(inventoryBalanceRepository.findById(id).orElse(null));
     }
 
+
+    public List<Warehouse> findBySkuId(UUID sku_id){
+            return inventoryBalanceRepository.findWarehouseBySkuId(sku_id);
+    }
+
+    public long getSkuCount(UUID sku_id){
+            return inventoryBalanceRepository.countSkuBySkuId(sku_id);
+    }
+
+    public List<Object[]> getSkuCountByWarehouse(UUID sku_id){
+            return inventoryBalanceRepository.grpByWarehouseAndCountSkus(sku_id);
+    }
+
+    public void deleteByTwoIds(UUID w_id , UUID sku_id){
+             inventoryBalanceRepository.deleteColumnByWarehouseIdAndSkuId(w_id,sku_id);
+    }
+
+    public void deleteUntilRes(Long count, UUID sku_id , UUID w_id ){
+
+            Long total = getSkuCount(sku_id);
+            while(count  < total){
+                    deleteByTwoIds(w_id,sku_id);
+                    total--;
+            }
+
+    }
+
     @Override
     public InventoryBalance DtoToEntity(InventoryBalanceDto inventoryBalanceDto) {
         // 1. Build the composite primary key class instance from DTO values
@@ -101,6 +129,10 @@ public class InventoryBalanceService implements DtoImpl<InventoryBalance, Invent
 
         return inventoryBalance;
     }
+
+
+
+
 
     @Override
     public InventoryBalanceDto EntityToDto(InventoryBalance inventoryBalance) {

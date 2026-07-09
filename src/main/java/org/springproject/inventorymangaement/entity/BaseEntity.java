@@ -19,10 +19,12 @@ public abstract class BaseEntity {
 
     @Column(name = "updated_at",nullable = false)
     private OffsetDateTime updatedAt;
-    public BaseEntity(){}
-    public BaseEntity(UUID id){this.id =id;
+    public BaseEntity(){
         createdAt = OffsetDateTime.now();
         updatedAt = OffsetDateTime.now();
+    }
+    public BaseEntity(UUID id){
+        this.id =id;
     }
 
     public BaseEntity( OffsetDateTime createdAt ,OffsetDateTime updatedAt){

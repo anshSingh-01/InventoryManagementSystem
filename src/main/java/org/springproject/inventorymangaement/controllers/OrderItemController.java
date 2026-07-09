@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springproject.inventorymangaement.dtos.OrderItemDto;
 import org.springproject.inventorymangaement.dtos.StatusSender;
+import org.springproject.inventorymangaement.entity.Sku;
 import org.springproject.inventorymangaement.enums.StatusCode;
 import org.springproject.inventorymangaement.services.OrderItemService;
 
@@ -51,4 +52,15 @@ public class OrderItemController {
         StatusSender response = orderItemService.addOrderItems(orderItemDtos);
         return ResponseEntity.ok(response);
     }
+
+//    @PostMapping("/checkout")
+//    public ResponseEntity<StatusSender> checkoutDemo(@RequestBody Sku sku){
+//
+//
+//
+//    }
+
+
+
+
 }

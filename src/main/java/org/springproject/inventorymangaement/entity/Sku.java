@@ -1,13 +1,13 @@
 package org.springproject.inventorymangaement.entity;
 
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
 
-public class Sku extends BaseEntity{
-
+public class Sku extends BaseEntity {
 
 
     @Column(name = "sku_code", nullable = false, unique = true)
@@ -23,9 +23,10 @@ public class Sku extends BaseEntity{
 
     // Getters, Setters, Constructors
 
-    public Sku(){
+    public Sku() {
         super();
     }
+
     public Sku(UUID id, String skuCode, Product product, BigDecimal weight) {
 
         this.skuCode = skuCode;
@@ -37,7 +38,6 @@ public class Sku extends BaseEntity{
         this.skuCode = skuCode;
         this.weight = weight;
     }
-
 
 
     public String getSkuCode() {
