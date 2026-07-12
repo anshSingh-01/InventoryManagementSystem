@@ -1,9 +1,10 @@
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jdk AS build
+WORKDIR /workspace
+COPY . .
+RUN ./mvnw clean package -DskipTests
 
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-
-COPY target/inventorymangaement-0.0.1-SNAPSHOT.jar app.jar
-
+COPY --from=build /workspace/target/*.jar app.jar
 EXPOSE 8080
-
-CMD ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
