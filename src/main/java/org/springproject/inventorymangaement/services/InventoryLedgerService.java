@@ -39,7 +39,7 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
         }
 
         ledger = inventoryLedgerRepository.save(ledger);
-        return new StatusSender(StatusCode.SUCCESS, "Added Ledger Entry Successfully", EntityToDto(ledger));
+        return new StatusSender(StatusCode.SUCCESS, "Added Ledger Entry Successfully", ledger);
     }
 
     // add ledger entries
@@ -66,6 +66,28 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
     public InventoryLedgerDto getLedgerEntryById(UUID id) {
         return EntityToDto(inventoryLedgerRepository.findById(id).orElse(null));
     }
+
+    // get ledger Id
+
+    public UUID getLedgerIdBySkuIDAndWareHouseId(UUID sku_id , UUID warehouse_id){
+
+            InventoryLedger inventoryLedger = inventoryLedgerRepository.findBYTwoIds(sku_id,warehouse_id);
+            return inventoryLedger.getId();
+    }
+
+    public InventoryLedger getLedgerEntityById(UUID id){
+            return inventoryLedgerRepository.findById(id).orElse(null);
+    }
+
+
+    // getting list of ledger with OrderReference
+
+    public List<InventoryLedger> getListOfLedgers(String orderReference){
+
+            return inventoryLedgerRepository.findInventoryLedgerByOrderReference(orderReference);
+
+    }
+
 
     @Override
     public InventoryLedger DtoToEntity(InventoryLedgerDto inventoryLedgerDto) {

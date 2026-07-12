@@ -15,6 +15,7 @@ import org.springproject.inventorymangaement.enums.OrderStatus;
 import org.springproject.inventorymangaement.enums.StatusCode;
 import org.springproject.inventorymangaement.repositoryimpl.OrderItemRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.OrderRepositoryImpl;
+import org.springproject.inventorymangaement.repositoryimpl.ReorderRuleRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.SkuRepositoryImpl;
 
 import java.math.BigDecimal;
@@ -25,6 +26,8 @@ import java.util.UUID;
 
 @Service
 public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
+
+
 
     @Autowired
     private OrderItemRepositoryImpl orderItemRepository;
@@ -40,6 +43,10 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
 
     @Autowired
     private InventoryBalanceService inventoryBalanceService;
+    @Autowired
+    private ReorderRuleRepositoryImpl reorderRuleRepositoryImpl;
+
+
 
 //    public record InventoryDto();
 
@@ -55,6 +62,8 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
         orderItemRepository.save(orderItem);
         return new StatusSender(StatusCode.SUCCESS, "Added Order Item Successfully", orderItemDto);
     }
+
+
 
     // add order items
     public StatusSender addOrderItems(List<OrderItemDto> orderItemDtos) {
@@ -75,43 +84,62 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
                 .toList();
     }
 
-
-    public StatusSender checkoutDemo(SkuDto skuDto , Long count , String orderRef, BigDecimal Quantity , BigDecimal unitprice) {
-
-        Sku sku = service.DtoToEntity(skuDto);
-        Long total = inventoryBalanceService.getSkuCount(sku.getId());
-
-        if(total < count){
-                return new StatusSender(StatusCode.ERROR,"Limit Exceed",null);
-        }
-
-        List<Object[]> lists = inventoryBalanceService.getSkuCountByWarehouse(sku.getId());
-
-        for(Object[] obj : lists){
-
-                if(count == 0L)break;
-                if((Long)obj[1] <= count){
-                        count = count - (Long)(obj[1]);
-                        obj[1] = 0L;
-                        inventoryBalanceService.deleteByTwoIds((UUID)obj[0],sku.getId());
-                }
-                else{
-                      obj[1] = (Long)obj[1] -count;
-                      count =0L;
-                      inventoryBalanceService.deleteUntilRes((Long)obj[1],sku.getId(), (UUID)obj[0]);
-                }
-        }
-
-
-        orderItemRepository.save(new OrderItem(new Order(orderRef, OrderStatus.RESERVED),sku,Quantity ,unitprice));
-        return new StatusSender(StatusCode.SUCCESS,"Item Reserved",null);
+    public Long getReservedSkus(UUID product_id){
+            return orderItemRepository.findReservedOrdersByProductId(product_id).stream()
+                    .mapToLong(BigDecimal::intValue).sum();
     }
+
+    public BigDecimal getSkus(UUID product_id){
+        BigDecimal total = new BigDecimal(0);
+
+        Long sum =orderItemRepository.findOrdersByProductId(product_id).stream()
+                .mapToLong(BigDecimal::intValue).sum();
+        return new BigDecimal(sum);
+    }
+
+
+//    public StatusSender checkoutDemo(SkuDto skuDto , Long count , String orderRef, BigDecimal Quantity , BigDecimal unitprice) {
+//
+//        Sku sku = service.DtoToEntity(skuDto);
+//        Long total = inventoryBalanceService.getSkuCount(sku.getId());
+//
+//        if(total < count){
+//                return new StatusSender(StatusCode.ERROR,"Limit Exceed",null);
+//        }
+//
+//        List<Object[]> lists = inventoryBalanceService.getSkuCountByWarehouse(sku.getId());
+//
+//        for(Object[] obj : lists){
+//
+//                if(count == 0L)break;
+//                if((Long)obj[1] <= count){
+//                        count = count - (Long)(obj[1]);
+//                        obj[1] = 0L;
+//                        inventoryBalanceService.deleteByTwoIds((UUID)obj[0],sku.getId());
+//                }
+//                else{
+//                      obj[1] = (Long)obj[1] -count;
+//                      count =0L;
+//                      inventoryBalanceService.deleteUntilRes((Long)obj[1],sku.getId(), (UUID)obj[0]);
+//                }
+//        }
+//
+//
+//        orderItemRepository.save(new OrderItem(new Order(orderRef, OrderStatus.RESERVED),sku,Quantity ,unitprice));
+//        return new StatusSender(StatusCode.SUCCESS,"Item Reserved",null);
+//    }
 
 
     // get order item
     public OrderItemDto getOrderItemById(UUID id) {
         return EntityToDto(orderItemRepository.findById(id).orElse(null));
     }
+
+
+    public List<Object[]> getSkusAndQuantityByOrderId(UUID order_id){
+            return orderItemRepository.getAllSkusByOrderId(order_id);
+    }
+
 
     @Override
     public OrderItem DtoToEntity(OrderItemDto orderItemDto) {

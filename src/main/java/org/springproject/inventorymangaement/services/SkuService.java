@@ -11,6 +11,7 @@ import org.springproject.inventorymangaement.enums.StatusCode;
 import org.springproject.inventorymangaement.repositoryimpl.ProductRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.SkuRepositoryImpl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,10 +34,16 @@ public class SkuService implements DtoImpl<Sku, SkuDto> {
         return skuDtos;
     }
 
-    public SkuDto findById(UUID id) {
+//    public SkuDto findById(UUID id) {
+//        Optional<Sku> sku = skuRepository.findById(id);
+//        if (!sku.isPresent()) return null;
+//        return EntityToDto(sku.get());
+//    }
+
+    public Sku findById(UUID id) {
         Optional<Sku> sku = skuRepository.findById(id);
         if (!sku.isPresent()) return null;
-        return EntityToDto(sku.get());
+        return sku.get();
     }
 
     public StatusSender DeleteById(UUID id) {
@@ -50,6 +57,27 @@ public class SkuService implements DtoImpl<Sku, SkuDto> {
         skuRepository.saveAll(skus);
 
         return new StatusSender(StatusCode.SUCCESS, "Saved All Skus", skuDtos);
+    }
+
+
+
+
+
+    public boolean checkMaxQuantityWarehosueTake(UUID sku_id ,BigDecimal quantity,BigDecimal warehouseCapacity){
+
+                Sku sku = findById(sku_id);
+
+                if(sku == null || quantity ==null){
+                    return true;
+                }
+                BigDecimal checkingQuantity = warehouseCapacity == null ? new BigDecimal(1000000):warehouseCapacity;
+                if(sku.getWeight().intValue()*quantity.intValue() > checkingQuantity.intValue()){
+                        return true;
+                }
+
+
+
+        return false;
     }
 
     public StatusSender addSku(SkuDto skuDto) {

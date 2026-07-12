@@ -27,7 +27,7 @@ public class SkuController {
     // Get a specific SKU by ID
     @GetMapping("/{id}")
     public ResponseEntity<SkuDto> getSkuById(@PathVariable UUID id) {
-        SkuDto skuDto = skuService.findById(id);
+        SkuDto skuDto = skuService.EntityToDto(skuService.findById(id));
         if (skuDto == null) {
             return ResponseEntity.notFound().build();
         }

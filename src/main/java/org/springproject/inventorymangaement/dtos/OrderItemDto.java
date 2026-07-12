@@ -14,7 +14,13 @@ public class OrderItemDto {
     private UUID sku_id;
     private BigDecimal quantity;  // Supports ordering fractions (e.g., 2.5 kg of raw materials)
     private BigDecimal unitPrice; // Enforces monetary accuracy
-
+    public OrderItemDto(){}
+    public OrderItemDto(UUID order_id, UUID sku_id, BigDecimal quantity, BigDecimal unitPrice) {
+        this.order_id = order_id;
+        this.sku_id = sku_id;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
 
     public UUID getOrderId() {
         return order_id;

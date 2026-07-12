@@ -19,6 +19,11 @@ public class InventoryAction extends BaseEntity {
         super();
     }
 
+    public InventoryAction(InventoryLedger inventoryLedger, User user) {
+        this.inventoryLedger = inventoryLedger;
+        this.user = user;
+    }
+
     public InventoryLedger getInventoryLedger() {
         return inventoryLedger;
     }

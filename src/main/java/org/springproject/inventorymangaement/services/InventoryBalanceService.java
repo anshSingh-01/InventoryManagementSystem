@@ -6,6 +6,7 @@ import org.springproject.inventorymangaement.compositeid.InventoryBalanceId;
 import org.springproject.inventorymangaement.dtos.DtoImpl;
 import org.springproject.inventorymangaement.dtos.InventoryBalanceDto;
 import org.springproject.inventorymangaement.dtos.StatusSender;
+import org.springproject.inventorymangaement.dtos.WarehouseDto;
 import org.springproject.inventorymangaement.entity.InventoryBalance;
 import org.springproject.inventorymangaement.entity.Sku;
 import org.springproject.inventorymangaement.entity.Warehouse;
@@ -13,6 +14,8 @@ import org.springproject.inventorymangaement.enums.StatusCode;
 import org.springproject.inventorymangaement.repositoryimpl.InventoryBalanceRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.SkuRepositoryImpl;
 import org.springproject.inventorymangaement.repositoryimpl.WarehouseRepositoryImpl;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,35 +63,107 @@ public class InventoryBalanceService implements DtoImpl<InventoryBalance, Invent
                 .toList();
     }
 
+    public List<Object[]> getReorderStock(){
+                return inventoryBalanceRepository.getAllReorderStock();
+    }
+
+    // delete zero avaible quantity
+
+    public void deleteZeroQuantityAvailableRows(){
+        inventoryBalanceRepository.deleteZeroQuantityAvailableRows();
+    }
+
+    // edit Inventory balance by DTo
+    public void editInventoryBalance(InventoryBalanceDto inventoryBalanceDto) {
+
+        UUID sku_id = inventoryBalanceDto.getSkuId();
+        UUID warehouse_id = inventoryBalanceDto.getWarehouseId();
+        BigDecimal quantityAvailable = inventoryBalanceDto.getQuantityAvailable();
+        BigDecimal quanityOnHand = inventoryBalanceDto.getQuantityOnHand();
+        InventoryBalance inventoryBalance = getInstanceOfIB(sku_id, warehouse_id);
+
+        Sku sku = skuRepository.findById(sku_id).get();
+        Warehouse warehouse = warehouseRepository.findById(warehouse_id).get();
+
+        if (inventoryBalance == null) {
+
+            inventoryBalanceRepository.save(new InventoryBalance(quanityOnHand, quantityAvailable, sku, warehouse));
+            return;
+        }
+
+
+        inventoryBalance.setQuantityAvailable(quantityAvailable.add(inventoryBalance.getQuantityAvailable()));
+        inventoryBalance.setQuantityOnHand(quanityOnHand.add(inventoryBalance.getQuantityOnHand()));
+
+        inventoryBalanceRepository.save(inventoryBalance);
+        return;
+    }
+
+    public void editIB(InventoryBalance inventoryBalance){
+            inventoryBalanceRepository.save(inventoryBalance);
+    }
+
+
+    public List<Object[]> getSkusPerWarehouse(UUID warehouse_id){
+            return inventoryBalanceRepository.getAllSkusInWarehouse(warehouse_id);
+    }
+
+    // quantity Available
+    public BigDecimal getQuantityAvailable(UUID sku_id, UUID warehouse_id) {
+        return inventoryBalanceRepository.findQuantityAvailable(sku_id, warehouse_id);
+    }
+
+    // get Instance on the basis of sku and warehouse
+    public InventoryBalance getInstanceOfIB(UUID sku_id, UUID warehouse_id) {
+        Optional<InventoryBalance> ibOpt = inventoryBalanceRepository.findById(sku_id, warehouse_id);
+        if (ibOpt.isPresent()) {
+            return ibOpt.get();
+        }
+
+        // Construct a new record with 0 quantities if not found
+        Sku sku = skuRepository.findById(sku_id)
+                .orElseThrow(() -> new RuntimeException("Sku not found: " + sku_id));
+        Warehouse wh = warehouseRepository.findById(warehouse_id)
+                .orElseThrow(() -> new RuntimeException("Warehouse not found: " + warehouse_id));
+
+        InventoryBalance newIb = new InventoryBalance(BigDecimal.ZERO, BigDecimal.ZERO, sku, wh);
+        return inventoryBalanceRepository.save(newIb);
+    }
+
+    // quantity on hand
+    public BigDecimal getQuantityOnHand(UUID sku_id, UUID warehouse_id) {
+        return inventoryBalanceRepository.findQuantityOnHand(sku_id, warehouse_id);
+    }
+
     // get inventory balance by its composite ID components
     public InventoryBalanceDto getInventoryBalanceById(InventoryBalanceId id) {
         return EntityToDto(inventoryBalanceRepository.findById(id).orElse(null));
     }
 
 
-    public List<Warehouse> findBySkuId(UUID sku_id){
-            return inventoryBalanceRepository.findWarehouseBySkuId(sku_id);
+    public List<Warehouse> findBySkuId(UUID sku_id) {
+        return inventoryBalanceRepository.findWarehouseBySkuId(sku_id);
     }
 
-    public long getSkuCount(UUID sku_id){
-            return inventoryBalanceRepository.countSkuBySkuId(sku_id);
+    public long getSkuCount(UUID sku_id) {
+        return inventoryBalanceRepository.countSkuBySkuId(sku_id);
     }
 
-    public List<Object[]> getSkuCountByWarehouse(UUID sku_id){
-            return inventoryBalanceRepository.grpByWarehouseAndCountSkus(sku_id);
+    public List<Object[]> getListOfWarehouseBySkuId(UUID sku_id) {
+        return inventoryBalanceRepository.grpByWarehouseAndCountSkus(sku_id);
     }
 
-    public void deleteByTwoIds(UUID w_id , UUID sku_id){
-             inventoryBalanceRepository.deleteColumnByWarehouseIdAndSkuId(w_id,sku_id);
+    public void deleteByTwoIds(UUID w_id, UUID sku_id) {
+        inventoryBalanceRepository.deleteColumnByWarehouseIdAndSkuId(w_id, sku_id);
     }
 
-    public void deleteUntilRes(Long count, UUID sku_id , UUID w_id ){
+    public void deleteUntilRes(Long count, UUID sku_id, UUID w_id) {
 
-            Long total = getSkuCount(sku_id);
-            while(count  < total){
-                    deleteByTwoIds(w_id,sku_id);
-                    total--;
-            }
+        Long total = getSkuCount(sku_id);
+        while (count < total) {
+            deleteByTwoIds(w_id, sku_id);
+            total--;
+        }
 
     }
 
@@ -129,9 +204,6 @@ public class InventoryBalanceService implements DtoImpl<InventoryBalance, Invent
 
         return inventoryBalance;
     }
-
-
-
 
 
     @Override

@@ -25,8 +25,10 @@ public class OrderDto extends BaseEntity {
 
     }
 
-
-
+    public OrderDto(String orderReference, OrderStatus status) {
+        this.orderReference = orderReference;
+        this.status = status;
+    }
 
     public String getOrderReference() {
         return orderReference;

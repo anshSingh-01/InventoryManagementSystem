@@ -40,6 +40,13 @@ public class InventoryBalance {
         this.quantityAvailable = quantityAvailable;
     }
 
+    public InventoryBalance(BigDecimal quantityOnHand, BigDecimal quantityAvailable,Sku sku , Warehouse warehouse) {
+        this.quantityOnHand = quantityOnHand;
+        this.quantityAvailable = quantityAvailable;
+        this.sku =sku;
+        this.warehouse =warehouse;
+    }
+
     public InventoryBalanceId getId() {
         return id;
     }

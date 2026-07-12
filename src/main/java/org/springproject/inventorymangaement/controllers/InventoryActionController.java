@@ -3,6 +3,7 @@ package org.springproject.inventorymangaement.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springproject.inventorymangaement.dtos.InventoryActionDto;
 import org.springproject.inventorymangaement.dtos.StatusSender;
 import org.springproject.inventorymangaement.entity.InventoryAction;
 import org.springproject.inventorymangaement.services.InventoryActionService;
@@ -28,8 +29,8 @@ public class InventoryActionController {
     }
 
     @PostMapping
-    public ResponseEntity<StatusSender> addInventoryAction(@RequestBody InventoryAction inventoryAction){
-                return ResponseEntity.ok(inventoryActionService.addAction(inventoryAction));
+    public ResponseEntity<StatusSender> addInventoryAction(@RequestBody InventoryActionDto inventoryActionDto){
+                return ResponseEntity.ok(inventoryActionService.addAction(inventoryActionDto));
     }
 
     @PostMapping("/bulk")
