@@ -23,6 +23,9 @@ public interface OrderItemRepositoryImpl extends JpaRepository<OrderItem, UUID> 
     @Query("select oi.sku.id ,oi.quantity from OrderItem oi where oi.order.id = ?1 ")
     List<Object[]> getAllSkusByOrderId(UUID order_id);
 
+    @Query("select oi from OrderItem oi where oi.order.orderReference = ?1 and oi.order.status=FULFILLED")
+    List<OrderItem> getAllOrderItemsByOrderRef(String orderRef);
+
 
 
 }

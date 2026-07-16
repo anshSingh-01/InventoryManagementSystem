@@ -3,12 +3,11 @@ package org.springproject.inventorymangaement.OrderItemTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springproject.inventorymangaement.records.Items;
-import org.springproject.inventorymangaement.records.OrderReservation;
+import org.springproject.inventorymangaement.records.BillRecord;
+import org.springproject.inventorymangaement.services.DiscountService;
+import org.springproject.inventorymangaement.services.OrderItemService;
 import org.springproject.inventorymangaement.services.OrderReservationService;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -16,6 +15,10 @@ public class OrderItemTest {
 
     @Autowired
     OrderReservationService orderReservationService;
+    @Autowired
+    OrderItemService orderItemService;
+    @Autowired
+    DiscountService discountService;
     @Test
     public void testingApi(){
 
@@ -27,7 +30,50 @@ public class OrderItemTest {
     @Test
     public void testingGetApi(){
 
-        System.out.println(orderReservationService.getReservationLookup("ORD-586770"));
+        System.out.println(orderReservationService.getReservationLookup("ORD-766664"));
+
+    }
+
+    @Test
+    public void testingDiscountApi(){
+
+        discountService.getAllDiscounts().stream().forEach(
+
+                (discountDto)->{
+                            discountDto.setActive(false);
+                            discountService.addDiscount(discountDto);
+                }
+
+        );
+
+    }
+
+
+
+
+    @Test
+    public void ChangingUnitPrice(){
+
+//        List<OrderItem> orderItems = orderItemService.getOrderItems().stream().map(orderItemService::DtoToEntity).toList();
+//
+//        orderItems.stream().forEach(
+//                orderItem -> {
+//                    Random random = new Random();
+//                    BigDecimal price = new BigDecimal(random.nextDouble(9000) + 1000);
+//                    orderItem.setUnitPrice(price);
+//
+//                }
+//
+//        );
+//
+//       orderItemService.saveAllOrderItems(orderItems);
+
+
+        BillRecord billRecord =orderReservationService.generateBill("ORD-766664");
+
+        System.out.println(billRecord.orderReference() + " " + billRecord.totalBill());
+        billRecord.billItems().stream().forEach(System.out::println);
+
 
     }
 

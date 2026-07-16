@@ -87,8 +87,6 @@ public class InventoryLedgerService implements DtoImpl<InventoryLedger, Inventor
             return inventoryLedgerRepository.findInventoryLedgerByOrderReference(orderReference);
 
     }
-
-
     @Override
     public InventoryLedger DtoToEntity(InventoryLedgerDto inventoryLedgerDto) {
         // Because ledgers represent an immutable historical timeline audit trail,

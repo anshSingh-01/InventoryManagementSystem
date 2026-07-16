@@ -21,7 +21,6 @@ public class InventoryLedgerController {
 
     // Get all ledger entries
     @GetMapping
-
     public ResponseEntity<List<InventoryLedgerDto>> getAllLedgerEntries() {
         List<InventoryLedgerDto> entries = inventoryLedgerService.getLedgerEntries();
         return ResponseEntity.ok(entries);

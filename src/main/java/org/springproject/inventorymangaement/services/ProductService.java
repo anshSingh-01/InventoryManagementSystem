@@ -22,7 +22,7 @@ public class ProductService implements DtoImpl<Product, ProductDto> {
     public List<ProductDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
         List<ProductDto> productDtos = products.stream()
-                .map(product -> new ProductDto(product))
+                .map(ProductDto::new)
                 .toList();
 
         return productDtos;
@@ -30,8 +30,7 @@ public class ProductService implements DtoImpl<Product, ProductDto> {
 
     public ProductDto findById(UUID id) {
         Optional<Product> product = productRepository.findById(id);
-        if (!product.isPresent()) return null;
-        return new ProductDto(product.get());
+        return product.map(ProductDto::new).orElse(null);
     }
 
     public StatusSender DeleteById(UUID id) {

@@ -26,18 +26,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(Customizer.withDefaults())
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all preflight CORS OPTIONS requests
-                .requestMatchers("/api/v1/auth/login", "/api/login", "/api/signin", "/api/users/**").permitAll()
-                .requestMatchers("/api/v1/inventory/receive", "/api/v1/inventory/transfer").hasAnyRole("FLOOR_STAFF", "MANAGER", "ADMIN")
-                .requestMatchers("/api/v1/inventory/audit-adjust", "/api/v1/inventory/reorder-rules").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/actuator/**", "/error").permitAll()
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtMockAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all preflight CORS OPTIONS requests
+                        .requestMatchers("/api/v1/auth/login", "/api/login", "/api/signin", "/api/users/**").permitAll()
+                        .requestMatchers("/api/v1/inventory/receive", "/api/v1/inventory/transfer").hasAnyRole("FLOOR_STAFF", "MANAGER", "ADMIN")
+                        .requestMatchers("/api/v1/inventory/audit-adjust", "/api/v1/inventory/reorder-rules").hasAnyRole("MANAGER", "ADMIN")
+                        .requestMatchers("/actuator/**", "/error").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtMockAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

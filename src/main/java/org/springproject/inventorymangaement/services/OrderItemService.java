@@ -19,14 +19,11 @@ import org.springproject.inventorymangaement.repositoryimpl.ReorderRuleRepositor
 import org.springproject.inventorymangaement.repositoryimpl.SkuRepositoryImpl;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.OffsetDateTime;
+import java.util.*;
 
 @Service
 public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
-
 
 
     @Autowired
@@ -37,15 +34,6 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
 
     @Autowired
     private SkuRepositoryImpl skuRepository;
-
-    @Autowired
-    private SkuService service;
-
-    @Autowired
-    private InventoryBalanceService inventoryBalanceService;
-    @Autowired
-    private ReorderRuleRepositoryImpl reorderRuleRepositoryImpl;
-
 
 
 //    public record InventoryDto();
@@ -62,7 +50,6 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
         orderItemRepository.save(orderItem);
         return new StatusSender(StatusCode.SUCCESS, "Added Order Item Successfully", orderItemDto);
     }
-
 
 
     // add order items
@@ -84,50 +71,18 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
                 .toList();
     }
 
-    public Long getReservedSkus(UUID product_id){
-            return orderItemRepository.findReservedOrdersByProductId(product_id).stream()
-                    .mapToLong(BigDecimal::intValue).sum();
+    public Long getReservedSkus(UUID product_id) {
+        return orderItemRepository.findReservedOrdersByProductId(product_id).stream()
+                .mapToLong(BigDecimal::intValue).sum();
     }
 
-    public BigDecimal getSkus(UUID product_id){
+    public BigDecimal getSkus(UUID product_id) {
         BigDecimal total = new BigDecimal(0);
 
-        Long sum =orderItemRepository.findOrdersByProductId(product_id).stream()
+        Long sum = orderItemRepository.findOrdersByProductId(product_id).stream()
                 .mapToLong(BigDecimal::intValue).sum();
         return new BigDecimal(sum);
     }
-
-
-//    public StatusSender checkoutDemo(SkuDto skuDto , Long count , String orderRef, BigDecimal Quantity , BigDecimal unitprice) {
-//
-//        Sku sku = service.DtoToEntity(skuDto);
-//        Long total = inventoryBalanceService.getSkuCount(sku.getId());
-//
-//        if(total < count){
-//                return new StatusSender(StatusCode.ERROR,"Limit Exceed",null);
-//        }
-//
-//        List<Object[]> lists = inventoryBalanceService.getSkuCountByWarehouse(sku.getId());
-//
-//        for(Object[] obj : lists){
-//
-//                if(count == 0L)break;
-//                if((Long)obj[1] <= count){
-//                        count = count - (Long)(obj[1]);
-//                        obj[1] = 0L;
-//                        inventoryBalanceService.deleteByTwoIds((UUID)obj[0],sku.getId());
-//                }
-//                else{
-//                      obj[1] = (Long)obj[1] -count;
-//                      count =0L;
-//                      inventoryBalanceService.deleteUntilRes((Long)obj[1],sku.getId(), (UUID)obj[0]);
-//                }
-//        }
-//
-//
-//        orderItemRepository.save(new OrderItem(new Order(orderRef, OrderStatus.RESERVED),sku,Quantity ,unitprice));
-//        return new StatusSender(StatusCode.SUCCESS,"Item Reserved",null);
-//    }
 
 
     // get order item
@@ -136,8 +91,31 @@ public class OrderItemService implements DtoImpl<OrderItem, OrderItemDto> {
     }
 
 
-    public List<Object[]> getSkusAndQuantityByOrderId(UUID order_id){
-            return orderItemRepository.getAllSkusByOrderId(order_id);
+    public List<Object[]> getSkusAndQuantityByOrderId(UUID order_id) {
+        return orderItemRepository.getAllSkusByOrderId(order_id);
+    }
+
+    public List<OrderItem> getOrderItemByOrderRef(String orderRef) {
+        return orderItemRepository.getAllOrderItemsByOrderRef(orderRef);
+    }
+
+    public void saveAllOrderItems(List<OrderItem> orderItems) {
+        orderItemRepository.saveAll(orderItems);
+    }
+
+    Comparator<OrderItem> lastUpdateDate = (d1, d2) -> d2.getUpdatedAt().compareTo(d1.getUpdatedAt());
+
+    public List<String> getFullfilledOrderRef() {
+
+        List<OrderItem> orderItems = orderItemRepository.findAll().stream().sorted(lastUpdateDate).toList();
+        List<String> orderRefs = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+
+            if (orderItem.getOrder().getStatus() == OrderStatus.FULFILLED)
+                orderRefs.add(orderItem.getOrder().getOrderReference());
+
+        }
+        return orderRefs;
     }
 
 

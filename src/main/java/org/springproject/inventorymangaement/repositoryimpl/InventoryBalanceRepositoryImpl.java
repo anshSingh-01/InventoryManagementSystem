@@ -37,7 +37,7 @@ public interface InventoryBalanceRepositoryImpl extends JpaRepository<InventoryB
     // this was unexpected !!!
     @Modifying
     @Transactional
-    @Query("delete  from InventoryBalance b where b.sku.id=?1 and b.warehouse.id=?2")
+    @Query("delete from InventoryBalance b where b.warehouse.id=?1 and b.sku.id=?2")
     void deleteColumnByWarehouseIdAndSkuId(UUID w_id , UUID sku_id);
 
     @Modifying

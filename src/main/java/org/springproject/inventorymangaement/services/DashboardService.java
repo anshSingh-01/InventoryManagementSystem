@@ -1,5 +1,4 @@
 package org.springproject.inventorymangaement.services;
-
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springproject.inventorymangaement.entity.Warehouse;
 import org.springproject.inventorymangaement.enums.WarehouseType;
 import org.springproject.inventorymangaement.records.DashboardBalance;
 import org.springproject.inventorymangaement.records.DashboardDetails;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -21,16 +19,7 @@ public class DashboardService {
     InventoryBalanceService inventoryBalanceService;
 
     @Autowired
-    OrderItemService orderItemService;
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
     ProductService productService;
-
-    @Autowired
-    InventoryLedgerService inventoryLedgerService;
 
     @Transactional
     public List<DashboardBalance> dashboardDetails() {
@@ -80,8 +69,6 @@ public class DashboardService {
         return new DashboardDetails(new BigDecimal(catalogCount), new BigDecimal(available), new BigDecimal(onHand), new BigDecimal(salaibleItems));
 
     }
-
-
 
 
 }

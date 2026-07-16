@@ -59,10 +59,6 @@ public class SkuService implements DtoImpl<Sku, SkuDto> {
         return new StatusSender(StatusCode.SUCCESS, "Saved All Skus", skuDtos);
     }
 
-
-
-
-
     public boolean checkMaxQuantityWarehosueTake(UUID sku_id ,BigDecimal quantity,BigDecimal warehouseCapacity){
 
                 Sku sku = findById(sku_id);

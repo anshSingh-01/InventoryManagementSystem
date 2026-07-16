@@ -9,11 +9,11 @@ import java.util.UUID;
 
 public interface InventoryLedgerRepositoryImpl extends JpaRepository<InventoryLedger, UUID> {
 
-            @Query("select il from InventoryLedger il where il.sku.id=?1 and il.warehouse.id=?2")
-            InventoryLedger findBYTwoIds(UUID sku_id , UUID warehouse_id);
+    @Query("select il from InventoryLedger il where il.sku.id=?1 and il.warehouse.id=?2")
+        InventoryLedger findBYTwoIds(UUID sku_id , UUID warehouse_id);
 
-    @Query("select il from InventoryLedger il where il.sku.id=?1 and il.warehouse.id=?2 order by il.createdAt desc")
-            List<InventoryLedger> findInventoryLedgerByOrderReference(String orderReference);
+    @Query("select il from InventoryLedger il where il.referenceId like concat(?1, '%') order by il.createdAt desc")
+        List<InventoryLedger> findInventoryLedgerByOrderReference(String orderReference);
 
 
 }

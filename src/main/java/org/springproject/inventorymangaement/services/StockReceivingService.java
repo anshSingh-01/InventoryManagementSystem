@@ -71,7 +71,7 @@ public class StockReceivingService {
 
             inventoryBalanceService.editInventoryBalance(new InventoryBalanceDto(sku_id, warehouse_id, quantity, quantity));
 
-            StatusSender statusSender = inventoryLedgerService.addLedgerEntry(new InventoryLedgerDto(sku_id, warehouse_id, TransactionOptions.TransactionType.TWO_PHASE, quantity, refrence_id + "{RECIEVE}", OffsetDateTime.now()));
+            StatusSender statusSender = inventoryLedgerService.addLedgerEntry(new InventoryLedgerDto(sku_id, warehouse_id, TransactionOptions.TransactionType.TWO_PHASE, quantity, refrence_id + "{RECIEVED}", OffsetDateTime.now()));
 
             InventoryLedger inventoryLedger = (InventoryLedger) statusSender.getObj();
             UUID ledger_id = inventoryLedger.getId();

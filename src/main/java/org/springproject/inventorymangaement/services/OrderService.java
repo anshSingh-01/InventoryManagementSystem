@@ -1,7 +1,9 @@
 package org.springproject.inventorymangaement.services;
 
+import com.hazelcast.collection.IQueue;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springproject.inventorymangaement.dtos.DtoImpl;
 import org.springproject.inventorymangaement.dtos.OrderDto;
@@ -18,29 +20,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OrderService implements DtoImpl<Order, OrderDto> {
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
     @Autowired
     private OrderRepositoryImpl orderRepository;
-
-    private Queue<String> queue;
-
-    @PostConstruct
-    public void start(){
-
-        scheduler.scheduleAtFixedRate(() -> {
-               queue = orderRepository.getOrderReferences();
-        }, 0, 2 , TimeUnit.MINUTES);
-
-    }
-
-
 
     // adding Order
     public StatusSender addOrder(OrderDto orderDto) {
         Order order = DtoToEntity(orderDto);
         orderRepository.save(order);
-        // Map back the generated ID or ensure it is returned
+
         orderDto.setId(order.getId());
         return new StatusSender(StatusCode.SUCCESS, "Added Order Successfully", orderDto);
     }
@@ -48,7 +35,7 @@ public class OrderService implements DtoImpl<Order, OrderDto> {
     public StatusSender editOrder(Order order) {
 
         orderRepository.save(order);
-        // Map back the generated ID or ensure it is returned
+
         return new StatusSender(StatusCode.SUCCESS, "Added Order Successfully", order);
     }
 
@@ -73,11 +60,11 @@ public class OrderService implements DtoImpl<Order, OrderDto> {
                 .toList();
     }
 
-    public UUID getId(String orderReference){
-            return orderRepository.findByOrderReference(orderReference).getId();
+    public UUID getId(String orderReference) {
+        return orderRepository.findByOrderReference(orderReference).getId();
     }
 
-    public Order getOrder(String orderReference){
+    public Order getOrder(String orderReference) {
         return orderRepository.findByOrderReference(orderReference);
     }
 
@@ -86,14 +73,18 @@ public class OrderService implements DtoImpl<Order, OrderDto> {
         return EntityToDto(orderRepository.findById(id).orElse(null));
     }
 
-    public boolean isOrderReferencePresent(String orderRef){
+    public Queue<String> getOrderReference() {
+        List<String> lst = orderRepository.getOrderReferences();
 
-            Order order = orderRepository.findByOrderReference(orderRef);
-        return order != null;
+            return new ArrayDeque<>(lst.stream().limit(3).toList());
+
     }
 
+    public boolean isOrderReferencePresent(String orderRef) {
 
-
+        Order order = orderRepository.findByOrderReference(orderRef);
+        return order != null;
+    }
 
     @Override
     public Order DtoToEntity(OrderDto orderDto) {
@@ -116,7 +107,6 @@ public class OrderService implements DtoImpl<Order, OrderDto> {
                 orderDto.getUpdatedAt()
         ));
     }
-
 
 
     @Override

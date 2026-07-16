@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
-
     @Autowired
     DashboardService dashboardService;
 

@@ -1,13 +1,11 @@
 package org.springproject.inventorymangaement.controllers;
 
-import org.hibernate.boot.internal.Abstract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springproject.inventorymangaement.dtos.StatusSender;
 import org.springproject.inventorymangaement.enums.StatusCode;
 import org.springproject.inventorymangaement.records.*;
-import org.springproject.inventorymangaement.services.InventoryBalanceService;
 import org.springproject.inventorymangaement.services.OrderReservationService;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public class OrderReservationController {
     }
 
     @PostMapping("/order-cancel/{user_id}/{orderReference}")
-    public ResponseEntity<StatusSender> CancelOrder(@PathVariable UUID user_id, @PathVariable  String orderReference) {
+    public ResponseEntity<StatusSender> CancelOrder(@PathVariable("user_id") UUID user_id, @PathVariable("orderReference")  String orderReference) {
 
         StatusSender statusSender = orderReservationService.CancellingOrder(user_id, orderReference);
         return ResponseEntity.ok(statusSender);
@@ -47,6 +45,13 @@ public class OrderReservationController {
         return ResponseEntity.ok(statusSender);
     }
 
+
+    @PostMapping("/cancel-reorder") // it can take either one or list of reorder cancel....
+    public ResponseEntity<StatusSender> cancelingReorderStock(@RequestBody StockReorderDetails stockReorderDetails) {
+        StatusSender statusSender = orderReservationService.stockReorderCanceling(stockReorderDetails);
+        return ResponseEntity.ok(statusSender);
+    }
+
     @PostMapping("/reorder-items")
     public ResponseEntity<StatusSender> reorderStock(@RequestBody StockReorderDetails stockReorderDetails) {
 
@@ -55,16 +60,12 @@ public class OrderReservationController {
     }
 
     @GetMapping("/reorder-alert")
-    public List<ReorderAlert> reorderAlertService() {
-        return orderReservationService.getAllReorderAlert();
-    }
+    public List<ReorderAlert> reorderAlertService(){return orderReservationService.getAllReorderAlert();}
 
 
+    @GetMapping("/bill-details/{orderReference}")
+    public BillRecord getBillDetails(@PathVariable String orderReference){return orderReservationService.generateBill(orderReference);}
 
     @GetMapping("/reservation-lookup/{order_reference}")
-    public ReservationLookup reservationLookup(String order_reference) {
-
-        return orderReservationService.getReservationLookup(order_reference);
-
-    }
+    public ReservationLookup reservationLookup(String order_reference) {return orderReservationService.getReservationLookup(order_reference);}
 }

@@ -27,7 +27,7 @@ public class OrderItemController {
     }
 
     // Get a specific order item by ID
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}")
     public ResponseEntity<OrderItemDto> getOrderItemById(@PathVariable UUID id) {
         OrderItemDto itemDto = orderItemService.getOrderItemById(id);
         if (itemDto == null) {
@@ -60,7 +60,10 @@ public class OrderItemController {
 //
 //    }
 
-
+    @GetMapping("/fullfilled-orders")
+    public List<String> getFullfilledOrders(){
+            return orderItemService.getFullfilledOrderRef();
+    }
 
 
 }

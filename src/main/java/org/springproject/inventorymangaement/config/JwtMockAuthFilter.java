@@ -26,14 +26,14 @@ public class JwtMockAuthFilter extends OncePerRequestFilter {
             String[] parts = token.split("-");
             if (parts.length > 0) {
                 String role = parts[0]; // e.g. "Admin", "Manager", "Floor_Staff"
-                
+
                 // Convert to uppercase Spring authority format, e.g., ROLE_ADMIN or ROLE_FLOOR_STAFF
                 String springRole = "ROLE_" + role.toUpperCase();
-                
+
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(springRole);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         role, null, Collections.singletonList(authority));
-                
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

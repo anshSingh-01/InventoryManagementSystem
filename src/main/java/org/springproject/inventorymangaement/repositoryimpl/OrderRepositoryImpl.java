@@ -12,7 +12,7 @@ public interface OrderRepositoryImpl extends JpaRepository<Order, UUID> {
 
         Order findByOrderReference(String orderRefrence);
 
-        @Query("select o.orderReference from Order o where o.status=RESERVED order by o.createdAt asc")
-        Queue<String> getOrderReferences();
+        @Query("select o.orderReference from Order o where o.status=RESERVED order by o.createdAt desc")
+        List<String> getOrderReferences();
 
 }
